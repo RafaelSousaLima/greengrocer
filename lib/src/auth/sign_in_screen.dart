@@ -145,7 +145,7 @@ class SignInScreem extends StatelessWidget {
                           ),
                           side: const BorderSide(width: 2, color: Colors.green),
                         ),
-                        onPressed: () {},
+                        onPressed: () => Navigator.of(context).pushNamed('signIn'),
                         child: const Text(
                           'Criar conta',
                           style: TextStyle(fontSize: 18),

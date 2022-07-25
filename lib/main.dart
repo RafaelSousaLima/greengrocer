@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:greengrocer/src/auth/sign_in_screen.dart';
+import 'package:greengrocer/src/router/route_generator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const SignInScreem(),
+      initialRoute: "home",
+      onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings),
     );
   }
 }
