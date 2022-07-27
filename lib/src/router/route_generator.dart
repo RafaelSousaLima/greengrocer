@@ -9,7 +9,7 @@ class RouteGenerator {
     switch (settings.name) {
       case 'home':
         return MaterialPageRoute(builder: (builder) => const SignInScreem());
-      case 'signIn': return MaterialPageRoute(builder: (builder) => const SignUpScreen());
+      case 'signIn': return MaterialPageRoute(builder: (builder) => SignUpScreen());
     }
     return _erroRoute();
   }
