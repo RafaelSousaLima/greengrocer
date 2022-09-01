@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:greengrocer/src/models/cart_item_model.dart';
 import 'package:greengrocer/src/models/order_model.dart';
+import 'package:greengrocer/src/pages/common_widgets/paymento_dialog.dart';
 import 'package:greengrocer/src/pages/orders/components/order_status_widget.dart';
 import 'package:greengrocer/src/services/utils_services.dart';
 
@@ -22,6 +23,7 @@ class OrderTile extends StatelessWidget {
         child: ExpansionTile(
           initiallyExpanded: order.status == 'pending_payment',
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -55,8 +57,14 @@ class OrderTile extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  //Divisão
                   VerticalDivider(
-                      color: Colors.grey.shade300, thickness: 2, width: 8),
+                    color: Colors.grey.shade300,
+                    thickness: 2,
+                    width: 8,
+                  ),
+
                   //Status do produto
                   Expanded(
                     flex: 1,
@@ -66,6 +74,35 @@ class OrderTile extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+            //  Total
+            Text.rich(
+              TextSpan(
+                style: const TextStyle(fontSize: 20),
+                children: [
+                  const TextSpan(
+                    text: 'Total ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(text: utilsServices.priceToCurrency(order.total))
+                ],
+              ),
+            ),
+            //  Botão pagamento
+            Visibility(
+              visible: order.status == 'pending_payment',
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  showDialog(context: context, builder: (_) => PaymentDialog(order: order,));
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                icon: Image.asset('assets/app_images/pix.png', height: 18),
+                label: Text('Ver QR Code Pix'),
               ),
             )
           ],
