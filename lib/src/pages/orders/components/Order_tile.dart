@@ -9,7 +9,7 @@ class OrderTile extends StatelessWidget {
 
   final UtilsServices utilsServices = UtilsServices();
 
-  OrderTile({required this.order});
+  OrderTile({Key? key, required this.order}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +20,7 @@ class OrderTile extends StatelessWidget {
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          initiallyExpanded: order.status == 'pending_payment',
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,33 +37,34 @@ class OrderTile extends StatelessWidget {
             ],
           ),
           children: [
-            SizedBox(
-              height: 150,
+            IntrinsicHeight(
               child: Row(
                 children: [
                   //Lista de produtos
                   Expanded(
                     flex: 2,
-                    child: ListView(
-                      children: order.items.map((orderItem) {
-                        return _OrderItemWidget(
-                          utilsServices: utilsServices,
-                          orderItem: orderItem,
-                        );
-                      }).toList(),
+                    child: SizedBox(
+                      height: 150,
+                      child: ListView(
+                        children: order.items.map((orderItem) {
+                          return _OrderItemWidget(
+                            utilsServices: utilsServices,
+                            orderItem: orderItem,
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                   VerticalDivider(
                       color: Colors.grey.shade300, thickness: 2, width: 8),
                   //Status do produto
                   Expanded(
-                      flex: 1,
-                      child: OrderStatusWidget(
-                        status: order.status,
-                        isOverdue: order.overdueDateTime.isBefore(
-                          DateTime.now(),
-                        ),
-                      )),
+                    flex: 1,
+                    child: OrderStatusWidget(
+                      status: order.status,
+                      isOverdue: order.overdueDateTime.isBefore(DateTime.now()),
+                    ),
+                  ),
                 ],
               ),
             )
