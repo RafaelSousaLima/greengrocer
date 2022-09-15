@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:greengrocer/src/config/custom_colors.dart';
 import 'package:greengrocer/src/pages/auth/components/custom_text_field.dart';
 import 'package:greengrocer/src/pages/base/base_screen.dart';
+import 'package:greengrocer/src/pages/common_widgets/app_name_widget.dart';
 
 class SignInScreem extends StatelessWidget {
   const SignInScreem({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -23,24 +23,10 @@ class SignInScreem extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
                   /*NOME DO APP*/
-                  Text.rich(
-                    TextSpan(style: const TextStyle(fontSize: 40), children: [
-                      const TextSpan(
-                        text: 'Green',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'grocer',
-                        style: TextStyle(
-                          color: CustomColors.customContractColor,
-                        ),
-                      )
-                    ]),
+                  const AppNameWidget(
+                    greenTitleColor: Colors.white,
+                    textSize: 40,
                   ),
 
                   /*CATEGORIAS*/
@@ -101,7 +87,8 @@ class SignInScreem extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (builder) {
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (builder) {
                           return BaseScreen();
                         }));
                       },
@@ -150,7 +137,8 @@ class SignInScreem extends StatelessWidget {
                           ),
                           side: const BorderSide(width: 2, color: Colors.green),
                         ),
-                        onPressed: () => Navigator.of(context).pushNamed('signIn'),
+                        onPressed: () =>
+                            Navigator.of(context).pushNamed('signUp'),
                         child: const Text(
                           'Criar conta',
                           style: TextStyle(fontSize: 18),
