@@ -8,6 +8,15 @@ import 'package:greengrocer/src/services/http_methods.dart';
 class AuthRepository {
   final HttpManager _httpManager = HttpManager();
 
+  handleUserOrError(Map<dynamic, dynamic> result) {
+    if (result['result'] != null) {
+      final user = UserModel.fromJson(result['result']);
+      return AuthResult.success(user);
+    } else {
+      return AuthResult.error(AuthErrors.authErrorsString(result['error']));
+    }
+  }
+
   Future<AuthResult> signIn(
       {required String email, required String password}) async {
     final result = await _httpManager.restRequest(
@@ -18,28 +27,31 @@ class AuthRepository {
         "password": password,
       },
     );
-    if (result['result'] != null) {
-      final user = UserModel.fromJson(result['result']);
-      return AuthResult.success(user);
-    } else {
-      return AuthResult.error(AuthErrors.authErrorsString(result['error']));
-    }
+    return handleUserOrError(result);
+  }
+
+  Future<AuthResult> signUp(UserModel userModel) async {
+    final result = await _httpManager.restRequest(
+      url: Endpoints.singup,
+      method: HttpMethods.post,
+      boby: userModel.toJson(),
+    );
+    return handleUserOrError(result);
   }
 
   Future<AuthResult> validateToken(String token) async {
     final result = await _httpManager.restRequest(
-      url: Endpoints.validateToken,
-      method: HttpMethods.post,
-      headers: {
-        'X-Parse-Session-Token': token
-      }
-    );
-    if (result['result'] != null) {
-      final user = UserModel.fromJson(result['result']);
-      return AuthResult.success(user);
-    } else {
-      return AuthResult.error(AuthErrors.authErrorsString(result['error']));
-    }
+        url: Endpoints.validateToken,
+        method: HttpMethods.post,
+        headers: {'X-Parse-Session-Token': token});
+    return handleUserOrError(result);
   }
 
+  Future<void> resetPassword(String email) async {
+    await _httpManager.restRequest(
+      url: Endpoints.resetPassword,
+      method: HttpMethods.post,
+      boby: {'email': email}
+    );
+  }
 }

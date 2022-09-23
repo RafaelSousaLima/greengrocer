@@ -9,7 +9,10 @@ class CustomTextField extends StatefulWidget {
   final bool readOnly;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
+  final void Function(String? value)? onSaved;
   final TextEditingController? controller;
+  final TextInputType? textInputType;
+  final GlobalKey<FormFieldState>? formFieldKey;
 
   CustomTextField({
     required this.icon,
@@ -18,8 +21,11 @@ class CustomTextField extends StatefulWidget {
     this.isSecret = false,
     this.readOnly = false,
     this.inputFormatters,
+    this.onSaved,
     this.validator,
     this.controller,
+    this.textInputType,
+    this.formFieldKey,
   });
 
   @override
@@ -40,12 +46,15 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextFormField(
+        key: widget.formFieldKey,
         initialValue: widget.initialValue,
         readOnly: widget.readOnly,
         inputFormatters: widget.inputFormatters,
         obscureText: isObscure,
         validator: widget.validator,
+        onSaved: widget.onSaved,
         controller: widget.controller,
+        keyboardType: widget.textInputType,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.email),
           suffixIcon: widget.isSecret

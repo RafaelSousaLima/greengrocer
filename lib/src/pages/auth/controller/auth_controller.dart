@@ -14,7 +14,6 @@ class AuthController extends GetxController {
 
   UserModel user = UserModel();
 
-
   @override
   void onInit() {
     super.onInit();
@@ -50,6 +49,25 @@ class AuthController extends GetxController {
     Get.offAllNamed(AppPagesRoute.signInRoute);
   }
 
+  Future<void> signUp() async {
+    isLoading.value = true;
+    // await Future.delayed(const Duration(seconds: 2));
+    AuthResult authResult = await authRepository.signUp(user);
+
+    authResult.when(
+      success: (user) {
+        this.user = user;
+        saveTokenAndProceedToBase();
+      },
+      error: (error) => utilsServices.showToast(
+        message: error,
+        isError: true,
+      ),
+    );
+
+    isLoading.value = false;
+  }
+
   Future<void> signIn({
     required String email,
     required String password,
@@ -64,9 +82,17 @@ class AuthController extends GetxController {
         this.user = user;
         saveTokenAndProceedToBase();
       },
-      error: (error) => utilsServices.showToast(message: error, isError: true),
+      error: (error) => utilsServices.showToast(
+        message: error,
+        isError: true,
+      ),
     );
 
     isLoading.value = false;
   }
+
+  Future<void> resetPassword(String email) async {
+    await authRepository.resetPassword(email);
+  }
+
 }

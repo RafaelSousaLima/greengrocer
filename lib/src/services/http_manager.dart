@@ -9,19 +9,24 @@ class HttpManager {
   }) async {
     final defaultHeaders = headers?.cast<String, String>() ?? {}
       ..addAll({
-        'Content-Type': 'application/json',
+        'content-type': 'application/json',
         'accept': 'application/json',
         'X-Parse-Application-Id': 'g1Oui3JqxnY4S1ykpQWHwEKGOe0dRYCPvPF4iykc',
-        'X-Parse-REST-API-Key': 'rFBKU8tk0m5ZlKES2CGieOaoYz6TgKxVMv8jRIsN'
+        'X-Parse-REST-API-Key': 'rFBKU8tk0m5ZlKES2CGieOaoYz6TgKxVMv8jRIsN',
       });
     Dio dio = Dio();
 
     try {
-      Response response = await dio.request(url, options: Options(method: method), data: boby);
+      Response response = await dio.request(url,
+          options: Options(
+            headers: defaultHeaders,
+            method: method,
+          ),
+          data: boby);
       return response.data;
     } on DioError catch (error) {
       return error.response?.data ?? {};
-    } catch(error) {
+    } catch (error) {
       return {};
     }
   }
