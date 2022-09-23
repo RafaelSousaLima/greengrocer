@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:greengrocer/src/router/route_generator.dart';
+import 'package:get/get.dart';
+import 'package:greengrocer/src/pages/auth/controller/auth_controller.dart';
+import 'package:greengrocer/src/pages_routes/app_pages.dart';
+import 'package:greengrocer/src/pages_routes/app_pages_route.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Get.put(AuthController());
   runApp(const MyApp());
 }
 
@@ -10,14 +15,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Greengrocer',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      initialRoute: "home",
-      onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings),
+      initialRoute: AppPagesRoute.splashRoute,
+      getPages: AppPages.pages,
     );
   }
 }

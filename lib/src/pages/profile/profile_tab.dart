@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:greengrocer/src/pages/auth/components/custom_text_field.dart';
+import 'package:greengrocer/src/pages/common_widgets/custom_text_field.dart';
 import 'package:greengrocer/src/config/app_data.dart' as data;
 
 class ProfileTab extends StatefulWidget {

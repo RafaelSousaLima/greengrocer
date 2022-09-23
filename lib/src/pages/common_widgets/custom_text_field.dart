@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,6 +8,8 @@ class CustomTextField extends StatefulWidget {
   final bool isSecret;
   final bool readOnly;
   final List<TextInputFormatter>? inputFormatters;
+  final String? Function(String?)? validator;
+  final TextEditingController? controller;
 
   CustomTextField({
     required this.icon,
@@ -18,6 +18,8 @@ class CustomTextField extends StatefulWidget {
     this.isSecret = false,
     this.readOnly = false,
     this.inputFormatters,
+    this.validator,
+    this.controller,
   });
 
   @override
@@ -36,12 +38,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.only(bottom: 15),
       child: TextFormField(
         initialValue: widget.initialValue,
         readOnly: widget.readOnly,
         inputFormatters: widget.inputFormatters,
         obscureText: isObscure,
+        validator: widget.validator,
+        controller: widget.controller,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.email),
           suffixIcon: widget.isSecret
