@@ -1,11 +1,17 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:greengrocer/src/config/custom_colors.dart';
 import 'package:greengrocer/src/models/item_model.dart';
+import 'package:greengrocer/src/pages/product/product_screen.dart';
+import 'package:greengrocer/src/pages_routes/app_pages_route.dart';
 import 'package:greengrocer/src/services/utils_services.dart';
 
 class ItemTile extends StatefulWidget {
-  ItemTile({Key? key, required this.item, required this.cartAnimationMethod})
-      : super(key: key);
+  const ItemTile({
+    Key? key,
+    required this.item,
+    required this.cartAnimationMethod,
+  }) : super(key: key);
 
   final ItemModel item;
   final void Function(GlobalKey) cartAnimationMethod;
@@ -33,7 +39,9 @@ class _ItemTileState extends State<ItemTile> {
       children: [
         GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed('productScreen', arguments: widget.item);
+            // Get.toNamed(AppPagesRoute.productRoute, arguments: widget.item);
+            // MaterialPageRoute(builder: (context) => ProductScreen(item: widget.item));
+            Get.to(ProductScreen(item: widget.item));
           },
           child: Card(
             elevation: 1,

@@ -17,6 +17,7 @@ class HomeController extends GetxController {
   CategoryModel? currentCategory;
 
   List<ItemModel> get allProducts => currentCategory!.items ?? [];
+  RxString searchTitle = ''.obs;
 
   bool get isLastPage {
     if (currentCategory!.items.length < itensPerPage) {
@@ -28,6 +29,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    debounce(searchTitle, (_) => filterByTitle(), time: const Duration(milliseconds: 600));
     getAllCategory();
   }
 
@@ -68,6 +70,29 @@ class HomeController extends GetxController {
     setLoading(false);
   }
 
+  void filterByTitle() {
+    for (var category in allcategories) {
+      category.items.clear();
+      category.pagination = 0;
+    }
+    if (searchTitle.value.isEmpty) {
+      allcategories.removeAt(0);
+    } else {
+      CategoryModel? c = allcategories.firstWhereOrNull((cat) => cat.id == '');
+      if (c == null) {
+        final allCategory =
+            CategoryModel(id: '', title: 'Todos', items: [], pagination: 0);
+        allcategories.insert(0, allCategory);
+      } else {
+        c.items.clear();
+        c.pagination = 0;
+      }
+    }
+    currentCategory = allcategories.first;
+    update();
+    getAllProducts();
+  }
+
   void loadMoreProducts() {
     currentCategory!.pagination++;
     getAllProducts(canLoad: false);
@@ -83,6 +108,13 @@ class HomeController extends GetxController {
       'categoryId': currentCategory!.id,
       'itemsPerPage': itensPerPage,
     };
+
+    if (searchTitle.value.isNotEmpty) {
+      body['title'] = searchTitle.value;
+      if (currentCategory!.id == '') {
+        body.remove('categoryId');
+      }
+    }
 
     HomeResult<ItemModel> result = await _homeRepository.getAllProducts(body);
 

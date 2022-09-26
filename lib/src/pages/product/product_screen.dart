@@ -1,11 +1,14 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:greengrocer/src/config/custom_colors.dart';
 import 'package:greengrocer/src/models/item_model.dart';
+import 'package:greengrocer/src/pages/base/controller/navigation_controller.dart';
+import 'package:greengrocer/src/pages/base/controller/navigation_tabs.dart';
 import 'package:greengrocer/src/pages/common_widgets/quantity_widget.dart';
 import 'package:greengrocer/src/services/utils_services.dart';
 
 class ProductScreen extends StatefulWidget {
-  ProductScreen({Key? key, required this.item}) : super(key: key);
+  const ProductScreen({Key? key, required this.item}) : super(key: key);
 
   final ItemModel item;
 
@@ -15,6 +18,7 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   final UtilsServices utilsServices = UtilsServices();
+  final navigationController = Get.find<NavigationController>();
 
   int cartItemQuantity = 1;
 
@@ -29,7 +33,7 @@ class _ProductScreenState extends State<ProductScreen> {
             children: [
               Expanded(
                   child:
-                      Hero(tag: widget.item.imgUrl, child: Image.asset(widget.item.imgUrl))),
+                      Hero(tag: widget.item.imgUrl, child: Image.network(widget.item.imgUrl))),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.all(32),
@@ -106,7 +110,10 @@ class _ProductScreenState extends State<ProductScreen> {
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.back();
+                            navigationController.navigatePageView(NavigationTabs.cart);
+                          },
                           icon: const Icon(
                             Icons.shopping_cart_outlined,
                           ),
@@ -131,7 +138,7 @@ class _ProductScreenState extends State<ProductScreen> {
             top: 10,
             child: SafeArea(
               child: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => Get.back(),
                 icon: const Icon(Icons.arrow_back_ios),
               ),
             ),
