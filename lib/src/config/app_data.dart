@@ -67,14 +67,14 @@ List<ItemModel> items = [
   papaya,
 ];
 
-List<String> categories = [
-  'Frutas',
-  'Verduras',
-  'Legumes',
-  'Grãos',
-  'Temperos',
-  'Cereais',
-];
+// List<String> categories = [
+//   'Frutas',
+//   'Verduras',
+//   'Legumes',
+//   'Grãos',
+//   'Temperos',
+//   'Cereais',
+// ];
 
 List<CartItemModel> cartItens = [
   CartItemModel(item: apple, quantity: 2),
