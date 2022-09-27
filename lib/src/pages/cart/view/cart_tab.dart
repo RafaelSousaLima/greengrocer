@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:greengrocer/src/config/app_data.dart' as data;
 import 'package:greengrocer/src/config/custom_colors.dart';
-import 'package:greengrocer/src/models/cart_item_model.dart';
-import 'package:greengrocer/src/pages/cart/components/cart_tile.dart';
+import 'package:greengrocer/src/pages/cart/controller/cart_controller.dart';
+import 'package:greengrocer/src/pages/cart/view/components/cart_tile.dart';
 import 'package:greengrocer/src/pages/common_widgets/paymento_dialog.dart';
 import 'package:greengrocer/src/services/utils_services.dart';
-import 'package:greengrocer/src/config/app_data.dart' as data;
 
 class CartTab extends StatefulWidget {
   CartTab({Key? key}) : super(key: key);
@@ -15,21 +16,14 @@ class CartTab extends StatefulWidget {
 
 class _CartTabState extends State<CartTab> {
   final UtilsServices utilsServices = UtilsServices();
-
-  void removeItemFromCart(CartItemModel cartItem) {
-    setState(() {
-      data.cartItens.remove(cartItem);
-      utilsServices.showToast(message: '${cartItem.item.itemName} removido(a) do carrinho');
-    });
-  }
-
+  final CartController cartController = Get.find<CartController>();
   double cartTotalPrice() {
     double total = 0;
-    setState(() {
-      for (var item in data.cartItens) {
-        total += item.totalPrice();
-      }
-    });
+    // setState(() {
+    //   for (var item in data.cartItens) {
+    //     total += item.totalPrice();
+    //   }
+    // });
     return total;
   }
 
@@ -42,12 +36,28 @@ class _CartTabState extends State<CartTab> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: data.cartItens.length,
-              itemBuilder: (context, index) {
-                return CartTile(
-                    cartItem: data.cartItens[index],
-                    remove: removeItemFromCart);
+            child: GetBuilder<CartController>(
+              builder: (controller) {
+                if (controller.cartItens.isEmpty) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.remove_shopping_cart,
+                        size: 40,
+                        color: CustomColors.customSwatchColor,
+                      ),
+                      const Text('Nao ha itens no carrinho'),
+                    ],
+                  );
+                }
+                return ListView.builder(
+                  // itemCount: data.cartItens.length,
+                  itemCount: controller.cartItens.length,
+                  itemBuilder: (context, index) {
+                    return CartTile(cartItem: controller.cartItens[index]);
+                  },
+                );
               },
             ),
           ),
@@ -80,13 +90,17 @@ class _CartTabState extends State<CartTab> {
                     fontSize: 12,
                   ),
                 ),
-                Text(
-                  utilsServices.priceToCurrency(cartTotalPrice()),
-                  style: TextStyle(
-                    fontSize: 23,
-                    color: CustomColors.customSwatchColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                GetBuilder<CartController>(
+                  builder: (controller) {
+                    return Text(
+                      utilsServices.priceToCurrency(controller.getTotalPrice()),
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: CustomColors.customSwatchColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(
                   height: 50,
@@ -94,14 +108,7 @@ class _CartTabState extends State<CartTab> {
                     onPressed: () async {
                       bool? result = await showOrderConfirmation();
                       if (result ?? false) {
-                        showDialog(
-                          context: context,
-                          builder: (_) => PaymentDialog(
-                            order: data.orders.first,
-                          ),
-                        );
-                      } else {
-                        utilsServices.showToast(message: 'Pedido não confirmado');
+                        cartController.checkoutCart();
                       }
                     },
                     style: ElevatedButton.styleFrom(
