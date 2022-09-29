@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:greengrocer/src/config/custom_colors.dart';
 import 'package:greengrocer/src/models/item_model.dart';
+import 'package:greengrocer/src/pages/cart/controller/cart_controller.dart';
 import 'package:greengrocer/src/pages/product/product_screen.dart';
 import 'package:greengrocer/src/pages_routes/app_pages_route.dart';
 import 'package:greengrocer/src/services/utils_services.dart';
@@ -23,7 +24,8 @@ class ItemTile extends StatefulWidget {
 class _ItemTileState extends State<ItemTile> {
   final GlobalKey imageGk = GlobalKey();
 
-  UtilsServices utilsServices = UtilsServices();
+  final UtilsServices utilsServices = UtilsServices();
+  final CartController _cartController = Get.find<CartController>();
 
   IconData tileIcon = Icons.add_shopping_cart_outlined;
 
@@ -39,9 +41,9 @@ class _ItemTileState extends State<ItemTile> {
       children: [
         GestureDetector(
           onTap: () {
-            // Get.toNamed(AppPagesRoute.productRoute, arguments: widget.item);
+            Get.toNamed(AppPagesRoute.productRoute, arguments: widget.item);
             // MaterialPageRoute(builder: (context) => ProductScreen(item: widget.item));
-            Get.to(ProductScreen(item: widget.item));
+            // Get.to(ProductScreen(item: widget.item));
           },
           child: Card(
             elevation: 1,
@@ -109,6 +111,7 @@ class _ItemTileState extends State<ItemTile> {
               child: InkWell(
                 onTap: () {
                   switchIcon();
+                  _cartController.addItemToCart(item: widget.item);
                   widget.cartAnimationMethod(imageGk);
                 },
                 child: Container(

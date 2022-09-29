@@ -14,7 +14,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (builder) => const SplashScreen());
       case 'signIn': return MaterialPageRoute(builder: (builder) => SignInScreem());
       case 'signUp': return MaterialPageRoute(builder: (builder) => SignUpScreen());
-      case 'productScreen': return MaterialPageRoute(builder: (builder) => ProductScreen(item: args as ItemModel));
+      case 'productScreen': return MaterialPageRoute(builder: (builder) => ProductScreen());
     }
     return _erroRoute();
   }
