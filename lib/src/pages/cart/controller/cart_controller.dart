@@ -17,6 +17,8 @@ class CartController extends GetxController {
 
   List<CartItemModel> cartItens = [];
 
+  bool isCheckoutLoading = false;
+
   @override
   void onInit() {
     super.onInit();
@@ -32,23 +34,35 @@ class CartController extends GetxController {
   }
 
   Future checkoutCart() async {
+    setCheckoutLoading(true);
+
     CartResult<OrderModel> cartResult = await _cartRepository.checkoutCart(
       token: _authController.user.token!,
       total: getTotalPrice(),
     );
 
+    setCheckoutLoading(false);
+
+
     cartResult.when(
         success: (data) {
+          cartItens.clear();
+          update();
           showDialog(
             context: Get.context!,
             builder: (_) => PaymentDialog(
-              order: data.orders.first,
+              order: data,
             ),
           );
         },
         error: (message) {
-          _utilsServices.showToast(message: 'Pedido não confirmado');
+          _utilsServices.showToast(message: message);
         });
+  }
+
+  void setCheckoutLoading(bool value) {
+    isCheckoutLoading = value;
+    update();
   }
 
   Future<bool> changeItemQuantity({
@@ -104,7 +118,7 @@ class CartController extends GetxController {
       );
 
       if (result) {
-        cartItens[itemIndex].quantity += quantity;
+        // cartItens[itemIndex].quantity += quantity;
       } else {
         _utilsServices.showToast(
             message: 'Ocorreu um erro ao adicionar a quantidade do produto',

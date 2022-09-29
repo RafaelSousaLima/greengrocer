@@ -17,6 +17,7 @@ class CartTab extends StatefulWidget {
 class _CartTabState extends State<CartTab> {
   final UtilsServices utilsServices = UtilsServices();
   final CartController cartController = Get.find<CartController>();
+
   double cartTotalPrice() {
     double total = 0;
     // setState(() {
@@ -104,27 +105,37 @@ class _CartTabState extends State<CartTab> {
                 ),
                 SizedBox(
                   height: 50,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      bool? result = await showOrderConfirmation();
-                      if (result ?? false) {
-                        cartController.checkoutCart();
-                      }
+                  child: GetBuilder<CartController>(
+                    builder: (controller) {
+                      return ElevatedButton(
+                        onPressed: controller.isCheckoutLoading
+                            ? null
+                            : () async {
+                                bool? result = await showOrderConfirmation();
+                                if (result ?? false) {
+                                  cartController.checkoutCart();
+                                } else {
+                                  utilsServices.showToast(message: 'Pedido não confirmado');
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: CustomColors.customSwatchColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: controller.isCheckoutLoading
+                            ? const CircularProgressIndicator()
+                            : const Text(
+                                'Concluir pedido',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                      );
                     },
-                    style: ElevatedButton.styleFrom(
-                      primary: CustomColors.customSwatchColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                    child: const Text(
-                      'Concluir pedido',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),
