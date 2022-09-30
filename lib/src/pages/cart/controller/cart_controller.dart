@@ -43,7 +43,6 @@ class CartController extends GetxController {
 
     setCheckoutLoading(false);
 
-
     cartResult.when(
         success: (data) {
           cartItens.clear();
