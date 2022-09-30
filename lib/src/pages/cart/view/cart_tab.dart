@@ -108,7 +108,7 @@ class _CartTabState extends State<CartTab> {
                   child: GetBuilder<CartController>(
                     builder: (controller) {
                       return ElevatedButton(
-                        onPressed: controller.isCheckoutLoading
+                        onPressed: (controller.isCheckoutLoading || controller.cartItens.isEmpty)
                             ? null
                             : () async {
                                 bool? result = await showOrderConfirmation();

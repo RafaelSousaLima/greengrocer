@@ -11,7 +11,6 @@ class AllOrdersController extends GetxController {
   final AuthController authController = Get.find<AuthController>();
   final UtilsServices utilsServices = UtilsServices();
 
-
   @override
   void onInit() {
     super.onInit();
@@ -22,7 +21,9 @@ class AllOrdersController extends GetxController {
     OrdersResult<List<OrderModel>> result = await orderRepository.getAllOrders(
         userId: authController.user.id!, token: authController.user.token!);
     result.when(success: (data) {
-      allOrders = data;
+      allOrders = data
+        ..sort((primeiroPedido, segundoPedido) => segundoPedido.createdDateTime!
+            .compareTo(primeiroPedido.createdDateTime!));
       update();
     }, error: (message) {
       utilsServices.showToast(message: message);
