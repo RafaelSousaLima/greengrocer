@@ -17,6 +17,25 @@ class AuthRepository {
     }
   }
 
+  Future<bool> changePassword({
+    required String email,
+    required String currentPassword,
+    required String newPassword,
+    required String token,
+  }) async {
+    final result = await _httpManager.restRequest(
+      url: Endpoints.changePassword,
+      method: HttpMethods.post,
+      boby: {
+        "email": email,
+        "currentPassword": currentPassword,
+        "newPassword": newPassword
+      },
+      headers: {'X-Parse-Session-Token': token},
+    );
+    return result['error'] == null;
+  }
+
   Future<AuthResult> signIn(
       {required String email, required String password}) async {
     final result = await _httpManager.restRequest(
@@ -49,9 +68,8 @@ class AuthRepository {
 
   Future<void> resetPassword(String email) async {
     await _httpManager.restRequest(
-      url: Endpoints.resetPassword,
-      method: HttpMethods.post,
-      boby: {'email': email}
-    );
+        url: Endpoints.resetPassword,
+        method: HttpMethods.post,
+        boby: {'email': email});
   }
 }

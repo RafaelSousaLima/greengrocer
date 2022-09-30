@@ -20,6 +20,25 @@ class AuthController extends GetxController {
     validateToken();
   }
 
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    isLoading.value = true;
+    final result = await authRepository.changePassword(
+      email: user.email!,
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      token: user.token!,
+    );
+    isLoading.value = false;
+    if (result) {
+      utilsServices.showToast(message: 'Senha atualizada com sucesso');
+    } else {
+      utilsServices.showToast(message: 'Senha atual incorreta', isError: true);
+    }
+  }
+
   void saveTokenAndProceedToBase() {
     utilsServices.saveLocalDate(key: StorageKeys.token, value: user.token!);
     Get.offAllNamed(AppPagesRoute.baseRoute);
@@ -94,5 +113,4 @@ class AuthController extends GetxController {
   Future<void> resetPassword(String email) async {
     await authRepository.resetPassword(email);
   }
-
 }
